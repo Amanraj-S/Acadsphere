@@ -1,18 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LineChart, Line } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  LineChart,
+  Line,
+} from "recharts";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { addSchoolExam, getSchoolExams } from "../api/Semester"; // ✅ correct import
+import {
+  addSchoolExam,
+  getSchoolExams,
+  updateSchoolExam,
+  deleteSchoolExam,
+} from "../api/Semester";
 
 const SchoolMarks = () => {
-  const [currentSubjects, setCurrentSubjects] = useState([{ name: "", mark: "", outOf: 100 }]);
+  const [currentSubjects, setCurrentSubjects] = useState([
+    { name: "", mark: "", outOf: 100 },
+  ]);
   const [exams, setExams] = useState([]);
+  const [editingId, setEditingId] = useState(null); // 🟡 Track edit mode
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getSchoolExams(); // ✅ correct API call
+        const data = await getSchoolExams();
         setExams(data || []);
       } catch (err) {
         toast.error("Failed to load school data from server.");
@@ -36,7 +55,10 @@ const SchoolMarks = () => {
   };
 
   const addSubject = () => {
-    setCurrentSubjects([...currentSubjects, { name: "", mark: "", outOf: 100 }]);
+    setCurrentSubjects([
+      ...currentSubjects,
+      { name: "", mark: "", outOf: 100 },
+    ]);
   };
 
   const deleteSubject = (index) => {
@@ -46,30 +68,65 @@ const SchoolMarks = () => {
   };
 
   const calculatePercentage = () => {
-    const total = currentSubjects.reduce((sum, s) => sum + (parseFloat(s.mark) || 0), 0);
-    const max = currentSubjects.reduce((sum, s) => sum + (parseFloat(s.outOf) || 0), 0);
+    const total = currentSubjects.reduce(
+      (sum, s) => sum + (parseFloat(s.mark) || 0),
+      0
+    );
+    const max = currentSubjects.reduce(
+      (sum, s) => sum + (parseFloat(s.outOf) || 0),
+      0
+    );
     return max > 0 ? ((total / max) * 100).toFixed(2) : 0;
   };
 
   const storeExam = async () => {
     const percentage = calculatePercentage();
-    const id = getNextAllowedExamId();
-    const failed = currentSubjects.filter((s) => parseFloat(s.mark) < (s.outOf / 2)).map((s) => s.name);
+    const failed = currentSubjects
+      .filter((s) => parseFloat(s.mark) < s.outOf / 2)
+      .map((s) => s.name);
 
     const newExam = {
-      id,
+      subjects: currentSubjects,
       percentage,
       failed,
-      subjects: currentSubjects
     };
 
     try {
-      await addSchoolExam(newExam); // ✅ correct API call
-      setExams([...exams, newExam]);
+      let saved;
+      if (editingId) {
+        saved = await updateSchoolExam(editingId, newExam);
+        setExams(exams.map((e) => (e._id === editingId ? saved : e)));
+        toast.success(`Exam ${saved.id || ""} updated!`);
+      } else {
+        const id = getNextAllowedExamId();
+        saved = await addSchoolExam({ ...newExam, id });
+        setExams([...exams, saved]);
+        toast.success(`Exam ${id} stored successfully!`);
+      }
+
       setCurrentSubjects([{ name: "", mark: "", outOf: 100 }]);
-      toast.success(`Exam ${id} stored successfully!`);
+      setEditingId(null);
     } catch (err) {
-      toast.error("Failed to store exam data.");
+      toast.error("Failed to save exam data.");
+    }
+  };
+
+ const handleEdit = (exam) => {
+  setCurrentSubjects(
+    exam.subjects.map((s) => ({ ...s, outOf: s.outOf || 100 }))
+  );
+  setEditingId(exam._id);
+  toast.info(`Editing Exam ${exam.id}`);
+};
+
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteSchoolExam(id);
+      setExams(exams.filter((e) => e._id !== id));
+      toast.success("Exam deleted.");
+    } catch (err) {
+      toast.error("Failed to delete exam.");
     }
   };
 
@@ -128,7 +185,7 @@ const SchoolMarks = () => {
             onClick={storeExam}
             className="bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-xl shadow-md"
           >
-            Store Exam
+            {editingId ? "Update Exam" : "Store Exam"}
           </button>
         </div>
 
@@ -144,12 +201,15 @@ const SchoolMarks = () => {
             <h2 className="text-xl font-semibold mb-3">📊 Exam {exam.id}</h2>
             <p className="mb-2">
               Percentage:{" "}
-              <span className="font-bold text-cyan-300">{exam.percentage}%</span> | Fail Subjects:{" "}
-              {exam.failed.join(", ") || "None"}
+              <span className="font-bold text-cyan-300">{exam.percentage}%</span>{" "}
+              | Fail Subjects: {exam.failed.join(", ") || "None"}
             </p>
 
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={exam.subjects} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <BarChart
+                data={exam.subjects}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#8884d8" />
                 <XAxis dataKey="name" stroke="#fff" />
                 <YAxis stroke="#fff" />
@@ -158,6 +218,21 @@ const SchoolMarks = () => {
                 <Bar dataKey="mark" fill="#00FFFF" />
               </BarChart>
             </ResponsiveContainer>
+
+            <div className="flex justify-end gap-4 mt-4">
+              <button
+                onClick={() => handleEdit(exam)}
+                className="bg-yellow-500 hover:bg-yellow-400 text-white px-4 py-1 rounded-xl"
+              >
+                ✏️ Edit
+              </button>
+              <button
+                onClick={() => handleDelete(exam._id)}
+                className="bg-red-600 hover:bg-red-500 text-white px-4 py-1 rounded-xl"
+              >
+                🗑️ Delete
+              </button>
+            </div>
           </motion.div>
         ))}
 
@@ -165,12 +240,22 @@ const SchoolMarks = () => {
           <motion.div className="mt-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <h2 className="text-2xl font-semibold mb-4 text-center">📈 Overall Percentage Trend</h2>
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={exams.map((e) => ({ name: `Exam ${e.id}`, percentage: e.percentage }))}>
+              <LineChart
+                data={exams.map((e) => ({
+                  name: `Exam ${e.id}`,
+                  percentage: e.percentage,
+                }))}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#8884d8" />
                 <XAxis dataKey="name" stroke="#fff" />
                 <YAxis stroke="#fff" />
                 <Tooltip contentStyle={{ backgroundColor: "#222", color: "#fff" }} />
-                <Line type="monotone" dataKey="percentage" stroke="#00FA9A" strokeWidth={2} />
+                <Line
+                  type="monotone"
+                  dataKey="percentage"
+                  stroke="#00FA9A"
+                  strokeWidth={2}
+                />
               </LineChart>
             </ResponsiveContainer>
           </motion.div>

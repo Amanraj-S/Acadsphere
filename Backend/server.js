@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -11,7 +10,7 @@ require('./config/passportSetup');
 dotenv.config();
 const app = express();
 
-// Connect to DB before starting server
+// Connect to MongoDB and start server
 (async () => {
   try {
     await connectDB();
@@ -25,11 +24,11 @@ const app = express();
     app.use(express.json());
 
     app.use(session({
-      secret: process.env.JWT_SECRET,
+      secret: process.env.JWT_SECRET || 'defaultsecret',
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: false, // Set to true in production with HTTPS
+        secure: false, // true if using HTTPS in production
         httpOnly: true
       }
     }));
@@ -37,12 +36,14 @@ const app = express();
     app.use(passport.initialize());
     app.use(passport.session());
 
-    // Routes
+    // API Routes
     app.use('/api/auth', require('./routes/authRoutes'));
     app.use('/api/college', require('./routes/collegeRoutes'));
     app.use('/api/school', require('./routes/schoolRoutes'));
+    // Optional: additional label-based delete route
+    // app.use('/api/semester', require('./routes/semesterRoutes')); ❌ REMOVE this if using unified collegeRoutes.js
 
-    // ✅ Serve React frontend for non-API routes (in production)
+    // Serve frontend in production
     if (process.env.NODE_ENV === 'production') {
       const frontendPath = path.join(__dirname, '../frontend/dist');
       app.use(express.static(frontendPath));
@@ -51,14 +52,14 @@ const app = express();
       });
     }
 
-    // 404 for unknown API routes (only if not handled above)
+    // 404 handler
     app.use((req, res) => {
-      res.status(404).json({ message: "Route not found" });
+      res.status(404).json({ message: 'Route not found' });
     });
 
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-
+    
   } catch (err) {
     console.error('❌ Failed to start server:', err.message);
     process.exit(1);
