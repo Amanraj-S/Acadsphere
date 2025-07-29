@@ -1,11 +1,12 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "middleware.js",
+  "main": "server.js",
   "scripts": {
-    "build": "echo 'Nothing to build'",
-    "start": "node server.js"
-  },
+  "start": "node server.js",
+  "build": "cd ../frontend && npm install && npm run build"
+}
+,
   "keywords": [],
   "author": "",
   "license": "ISC",
