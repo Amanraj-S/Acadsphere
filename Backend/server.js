@@ -17,7 +17,7 @@ const app = express();
 
     // Middleware
     app.use(cors({
-      origin: 'http://localhost:5173',
+      origin: 'http://localhost:5173', // ✅ Adjust this for production if needed
       credentials: true
     }));
 
@@ -28,7 +28,7 @@ const app = express();
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: false,
+        secure: false, // ✅ Set to true if using HTTPS in production
         httpOnly: true
       }
     }));
@@ -40,20 +40,18 @@ const app = express();
     app.use('/api/auth', require('./routes/authRoutes'));
     app.use('/api/college', require('./routes/collegeRoutes'));
     app.use('/api/school', require('./routes/schoolRoutes'));
-    // app.use('/api/semester', require('./routes/semesterRoutes')); // ❌ If unused, keep this commented out
+    // ❌ Do not include /api/semester if handled in /college
 
-    // Serve frontend in production
+    // ✅ Serve frontend in production
     if (process.env.NODE_ENV === 'production') {
-      const frontendPath = path.join(__dirname, '../frontend/dist');
+      const frontendPath = path.resolve(__dirname, '../frontend/dist');
       app.use(express.static(frontendPath));
-
-      // ✅ FIX: replace '*' with '/*' to avoid "Missing parameter name" error
-      app.get('/*', (req, res) => {
+      app.get('*', (req, res) => {
         res.sendFile(path.join(frontendPath, 'index.html'));
       });
     }
 
-    // 404 handler (for APIs)
+    // 404 fallback
     app.use((req, res) => {
       res.status(404).json({ message: 'Route not found' });
     });
