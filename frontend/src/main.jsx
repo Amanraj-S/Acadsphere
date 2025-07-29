@@ -5,7 +5,7 @@ import './index.css';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom'; // ✅
 
-axios.defaults.baseURL = 'https://acadsphere.onrender.com'; // ✅ Change to your backend URL in prod
+axios.defaults.baseURL = 'https://acadsphere-1.onrender.com'; // ✅ Change to your backend URL in prod
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use((config) => {
