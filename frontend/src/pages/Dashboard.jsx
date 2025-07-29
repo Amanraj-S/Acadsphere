@@ -16,7 +16,7 @@ export default function Dashboard({ username = "Student" }) {
       {/* Logout Button */}
       <motion.button
         onClick={handleLogout}
-        className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 px-4 py-2 bg-white/10 border border-red-500 text-red-300 backdrop-blur-md rounded-xl font-semibold shadow-lg hover:bg-red-600 hover:text-white hover:scale-105 transition-all duration-300 text-sm sm:text-base"
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 px-4 py-2 bg-red-500 text-white border border-red-400 backdrop-blur-md rounded-xl font-semibold shadow-lg hover:bg-red-600 hover:scale-105 transition-all duration-300 text-sm sm:text-base"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}

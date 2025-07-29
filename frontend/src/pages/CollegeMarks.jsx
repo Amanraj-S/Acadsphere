@@ -145,13 +145,11 @@ const AddCollegeMarks = () => {
 
   const editSemester = (index) => {
     const sem = semesters[index];
-
     const copiedSubjects = sem.subjects.map((subj) => ({
       name: subj.name,
       mark: subj.mark,
       credit: subj.credit
     }));
-
     setCurrentSubjects(copiedSubjects);
     setEditingSemesterId(sem._id);
     toast.info(`Editing ${sem.semester}...`);
@@ -160,22 +158,22 @@ const AddCollegeMarks = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white p-4 md:p-6">
       <ToastContainer />
-      <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">🎓 College Marks Tracker</h2>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-center">🎓 College Marks Tracker</h2>
 
       <motion.div
-        className="bg-white/10 backdrop-blur-md p-4 md:p-6 rounded-2xl shadow-xl max-w-5xl mx-auto"
+        className="bg-white/10 backdrop-blur-md p-4 md:p-6 rounded-2xl shadow-xl max-w-full md:max-w-4xl mx-auto"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h3 className="text-xl md:text-2xl font-semibold mb-4">
+        <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4">
           {editingSemesterId ? "Edit Semester" : `Enter Semester ${semesterCount} Marks`}
         </h3>
 
         {currentSubjects.map((subject, index) => (
           <motion.div
             key={index}
-            className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-3"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.2 }}
@@ -228,7 +226,7 @@ const AddCollegeMarks = () => {
 
       {semesters.length > 0 && (
         <>
-          <h3 className="text-2xl md:text-3xl font-bold mt-10 text-center">📚 Stored Semesters</h3>
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mt-10 text-center">📚 Stored Semesters</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             {[...semesters]
@@ -271,7 +269,7 @@ const AddCollegeMarks = () => {
 
           <div className="mt-10 bg-white/10 backdrop-blur-md p-4 md:p-6 rounded-xl shadow-xl overflow-x-auto">
             <h3 className="text-xl md:text-2xl font-semibold mb-4">📊 GPA Chart</h3>
-            <div className="w-full max-w-full">
+            <div className="min-w-[400px] w-full">
               <BarChart width={400} height={300} data={semesters}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#8884d8" />
                 <XAxis dataKey="semester" stroke="#fff" />
@@ -284,7 +282,7 @@ const AddCollegeMarks = () => {
 
           <div className="mt-10 bg-white/10 backdrop-blur-md p-4 md:p-6 rounded-xl shadow-xl overflow-x-auto">
             <h3 className="text-xl md:text-2xl font-semibold mb-4">📈 GPA Trend</h3>
-            <div className="w-full max-w-full">
+            <div className="min-w-[600px] w-full">
               <LineChart width={600} height={300} data={semesters}>
                 <XAxis dataKey="semester" stroke="#fff" />
                 <YAxis domain={[0, 10]} stroke="#fff" />
