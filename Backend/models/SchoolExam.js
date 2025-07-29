@@ -6,11 +6,11 @@ const schoolExamSchema = new mongoose.Schema({
     {
       name: String,
       mark: Number,
-      outOf: Number
+      outOf: Number,
     }
   ],
   percentage: Number,
-  failed: [String], // ✅ fix: was Number, now an array of strings
+  failed: [String], // was Number, now array of subject names
 }, { timestamps: true });
 
-module.exports = mongoose.model('SchoolExam', schoolExamSchema);
+module.exports = mongoose.models.SchoolExam || mongoose.model('SchoolExam', schoolExamSchema);
