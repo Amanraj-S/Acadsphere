@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "middleware.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo 'Nothing to build'",
     "start": "node server.js"
   },
   "keywords": [],
