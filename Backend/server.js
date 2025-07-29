@@ -17,7 +17,7 @@ const app = express();
 
     // Middleware
     app.use(cors({
-      origin: process.env.CLIENT_URL || 'http://localhost:5173',
+      origin: 'http://localhost:5173',
       credentials: true
     }));
 
@@ -28,7 +28,7 @@ const app = express();
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: process.env.NODE_ENV === 'production', // ✅ only secure cookies in production
+        secure: false, // true if using HTTPS in production
         httpOnly: true
       }
     }));
@@ -40,26 +40,26 @@ const app = express();
     app.use('/api/auth', require('./routes/authRoutes'));
     app.use('/api/college', require('./routes/collegeRoutes'));
     app.use('/api/school', require('./routes/schoolRoutes'));
+    // Optional: additional label-based delete route
+    // app.use('/api/semester', require('./routes/semesterRoutes')); ❌ REMOVE this if using unified collegeRoutes.js
 
-    // ✅ Serve frontend static files in production
+    // Serve frontend in production
     if (process.env.NODE_ENV === 'production') {
-      const frontendPath = path.join(__dirname, 'frontend', 'dist');
+      const frontendPath = path.join(__dirname, '../frontend/dist');
       app.use(express.static(frontendPath));
       app.get('*', (req, res) => {
         res.sendFile(path.join(frontendPath, 'index.html'));
       });
     }
 
-    // Fallback for unknown routes
+    // 404 handler
     app.use((req, res) => {
       res.status(404).json({ message: 'Route not found' });
     });
 
-    const PORT = process.env.PORT || 10000;
-    app.listen(PORT, () =>
-      console.log(`🚀 Server running on port ${PORT}`)
-    );
-
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+    
   } catch (err) {
     console.error('❌ Failed to start server:', err.message);
     process.exit(1);
