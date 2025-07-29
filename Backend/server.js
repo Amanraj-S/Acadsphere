@@ -17,7 +17,7 @@ const app = express();
 
     // Middleware
     app.use(cors({
-      origin: 'https://acadsphere-1.onrender.com',
+      origin: 'https://acadsphere.onrender.com',
       credentials: true
     }));
 
@@ -40,8 +40,7 @@ const app = express();
     app.use('/api/auth', require('./routes/authRoutes'));
     app.use('/api/college', require('./routes/collegeRoutes'));
     app.use('/api/school', require('./routes/schoolRoutes'));
-    // Optional: additional label-based delete route
-    // app.use('/api/semester', require('./routes/semesterRoutes')); ❌ REMOVE this if using unified collegeRoutes.js
+    
 
     // Serve frontend in production
     if (process.env.NODE_ENV === 'production') {

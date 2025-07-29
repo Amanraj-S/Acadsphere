@@ -6,7 +6,7 @@ import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 
 // ✅ Set base URL for API requests
-axios.defaults.baseURL = 'https://acadsphere-1.onrender.com'; // Change in local dev if needed
+axios.defaults.baseURL = 'https://acadsphere.onrender.com'; // Change in local dev if needed
 axios.defaults.withCredentials = true; // Send cookies
 
 // ✅ Automatically attach JWT token from localStorage

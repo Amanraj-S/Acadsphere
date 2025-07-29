@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://acadsphere-1.onrender.com/api',
+  baseURL: 'https://acadsphere.onrender.com/api',
   withCredentials: true,
 });
 
