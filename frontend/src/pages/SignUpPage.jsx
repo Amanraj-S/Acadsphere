@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import { FaUserAlt, FaEnvelope, FaLock } from "react-icons/fa";
-import { signup, googleLogin } from "../api/auth"; // ✅ updated from `register` to `signup`
+import { signup, googleLogin } from "../api/auth";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -13,10 +13,10 @@ export default function SignUpPage() {
 
   const handleRegister = async () => {
     try {
-      // ✅ No username passed, backend will generate a unique one
       await signup({ name, email, password });
+      localStorage.setItem("name", name); // ✅ Save name to localStorage
       navigate("/");
-      alert("Account Created Successfully")
+      alert("Account Created Successfully");
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
     }
@@ -29,6 +29,7 @@ export default function SignUpPage() {
     };
     try {
       await googleLogin(dummyGoogleUser);
+      localStorage.setItem("name", dummyGoogleUser.name); // ✅ Save Google name
       navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Google signup failed");
