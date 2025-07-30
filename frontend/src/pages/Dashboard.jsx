@@ -4,6 +4,7 @@ import { LogOut } from "lucide-react";
 
 export default function Dashboard({ username = "Student" }) {
   const navigate = useNavigate();
+   const username = localStorage.getItem("name") || "Student";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -36,14 +37,14 @@ export default function Dashboard({ username = "Student" }) {
       </motion.h1>
 
       {/* Welcome Text */}
-      <motion.p
-        className="text-lg sm:text-xl text-gray-300 mb-2 text-center"
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        Welcome, <span className="font-semibold text-indigo-500">{username}</span> 👋
-      </motion.p>
+     <motion.p
+      className="text-lg sm:text-xl text-gray-300 mb-2 text-center"
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay: 0.2 }}
+    >
+      Welcome, <span className="font-semibold text-indigo-500">{username}</span> 👋
+    </motion.p>
 
       {/* Instructions */}
       <motion.p
