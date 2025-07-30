@@ -2,12 +2,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
 
-export default function Dashboard({ username = "Student" }) {
+export default function Dashboard() {
   const navigate = useNavigate();
-   const username = localStorage.getItem("name") || "Student";
+
+  // ✅ Get user's name from localStorage, fallback to "Student"
+  const username = localStorage.getItem("name") || "Student";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("name"); // ✅ Clear name on logout
     navigate("/");
   };
 
@@ -37,14 +40,14 @@ export default function Dashboard({ username = "Student" }) {
       </motion.h1>
 
       {/* Welcome Text */}
-     <motion.p
-      className="text-lg sm:text-xl text-gray-300 mb-2 text-center"
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.2 }}
-    >
-      Welcome, <span className="font-semibold text-indigo-500">{username}</span> 👋
-    </motion.p>
+      <motion.p
+        className="text-lg sm:text-xl text-gray-300 mb-2 text-center"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        Welcome, <span className="font-semibold text-indigo-500">{username}</span> 👋
+      </motion.p>
 
       {/* Instructions */}
       <motion.p
