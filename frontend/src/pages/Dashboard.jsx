@@ -29,6 +29,7 @@ export default function Dashboard() {
         <LogOut size={16} className="hidden sm:block md:hidden" />
         <LogOut size={18} className="hidden md:block" />
         <span className="hidden xs:inline">Logout</span>
+        <span className="xs:hidden">Logout</span>
       </motion.button>
 
       {/* Title */}
