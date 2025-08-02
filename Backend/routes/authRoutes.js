@@ -20,7 +20,7 @@ router.get(
     });
 
     // Redirect to frontend with token as query param
-    res.redirect(`http://localhost:5173/dashboard?token=${token}`);
+    res.redirect(`https://acadsphere.onrender.com/dashboard?token=${token}`);
   }
 );
 

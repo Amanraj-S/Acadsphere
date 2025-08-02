@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function Dashboard() {
     const token = tokenFromUrl || localStorage.getItem("token");
     if (token) {
       try {
-        const decoded = jwt_decode(token);
+        const decoded = jwtDecode(token);
         if (decoded?.name) {
           setUsername(decoded.name);
           localStorage.setItem("name", decoded.name); // Optional: cache name
