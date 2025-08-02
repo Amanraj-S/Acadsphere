@@ -1,16 +1,39 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
+import jwt_decode from "jwt-decode";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("Student");
 
-  // ✅ Get user's name from localStorage, fallback to "Student"
-  const username = localStorage.getItem("name") || "Student";
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get("token");
+
+    if (tokenFromUrl) {
+      localStorage.setItem("token", tokenFromUrl);
+      window.history.replaceState({}, document.title, "/dashboard");
+    }
+
+    const token = tokenFromUrl || localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwt_decode(token);
+        if (decoded?.name) {
+          setUsername(decoded.name);
+          localStorage.setItem("name", decoded.name); // Optional: cache name
+        }
+      } catch (err) {
+        console.error("Invalid token");
+      }
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("name"); // ✅ Clear name on logout
+    localStorage.removeItem("name");
     navigate("/");
   };
 
