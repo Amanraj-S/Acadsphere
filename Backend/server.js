@@ -1,5 +1,4 @@
 // server.js
-// Load environment variables first
 require('dotenv').config();
 
 const express = require('express');
@@ -8,10 +7,27 @@ const passport = require('passport');
 const path = require('path');
 const connectDB = require('./config/db');
 
-// Load Passport config AFTER env loaded
 require('./config/passportSetup');
 
 const app = express();
+
+function safeUseRoute(mountPath, routePath, appInstance) {
+  try {
+    const r = require(routePath);
+    // Basic validation: router should be function (express Router is a function)
+    if (!r || (typeof r !== 'function' && typeof r !== 'object')) {
+      console.warn(`[WARN] Route module ${routePath} did not export a router.`);
+    }
+    appInstance.use(mountPath, r);
+    console.log(`Mounted ${routePath} at ${mountPath}`);
+  } catch (err) {
+    // Attach routePath to error for easier debugging
+    console.error(`❌ Failed to mount route file: ${routePath} (mount at ${mountPath})`);
+    console.error(err && err.stack ? err.stack : err);
+    // Re-throw so startup will fail OR comment out rethrow to continue (choose one)
+    throw err;
+  }
+}
 
 (async () => {
   try {
@@ -19,61 +35,46 @@ const app = express();
     await connectDB();
     console.log('✅ Database connected.');
 
-    // CORS: allow frontend origin from env or default to your vercel app
     const FRONTEND_URL = process.env.FRONTEND_URL || 'https://acadsphere.vercel.app';
 
     app.use(
       cors({
         origin: FRONTEND_URL,
-        credentials: true, // enable cookies if needed
+        credentials: true,
       })
     );
 
     app.use(express.json());
-
-    // Passport middleware initialization (no sessions for JWT stateless)
     app.use(passport.initialize());
 
-    // API Routes
-    app.use('/api/auth', require('./routes/authRoutes'));
-    app.use('/api/college', require('./routes/collegeRoutes'));
-    app.use('/api/school', require('./routes/schoolRoutes'));
+    // Use safe loader so we get precise errors
+    safeUseRoute('/api/auth', './routes/authRoutes', app);
+    safeUseRoute('/api/college', './routes/collegeRoutes', app);
+    safeUseRoute('/api/school', './routes/schoolRoutes', app);
 
-    // Serve frontend in production
     if (process.env.NODE_ENV === 'production') {
       const frontendPath = path.join(__dirname, '../frontend/dist');
       app.use(express.static(frontendPath));
-
-      // If the frontend build exists, serve index.html for all unmatched routes
       app.get('*', (req, res) => {
         res.sendFile(path.join(frontendPath, 'index.html'));
       });
     }
 
-    // 404 handler (for API routes)
     app.use((req, res) => {
       res.status(404).json({ message: 'Route not found' });
     });
-
-    // Optional global error handler
-    // const { errorHandler } = require('./middleware/errorMiddleware');
-    // app.use(errorHandler);
 
     const PORT = process.env.PORT || 5000;
     const server = app.listen(PORT, () =>
       console.log(`🚀 Server running on port ${PORT} (ENV: ${process.env.NODE_ENV || 'development'})`)
     );
 
-    // Graceful shutdown handlers
     const shutdown = (reason) => {
       console.warn('Shutting down server:', reason);
       server.close(() => {
         console.log('HTTP server closed.');
-        // if you have DB connection close logic, call it here
         process.exit(1);
       });
-
-      // Force exit if still not closed after 10s
       setTimeout(() => {
         console.error('Forcing shutdown...');
         process.exit(1);
@@ -97,11 +98,9 @@ const app = express();
       });
     });
 
-    // Export server for tests (if needed)
     module.exports = app;
   } catch (err) {
-    console.error('❌ Failed to start server:', err);
-    // Ensure the process exits with failure so Render can retry / show error
+    console.error('❌ Failed to start server:', err && err.stack ? err.stack : err);
     process.exit(1);
   }
 })();
