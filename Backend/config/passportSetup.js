@@ -1,32 +1,55 @@
-// backend/config/passportSetup.js
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
-const dotenv = require('dotenv');
-dotenv.config(); // ✅ Needed to load env vars if not already loaded
+
+// Helper to generate a unique username based on user's name plus random suffix
+const generateUsername = (name) => {
+  return (
+    name.trim().toLowerCase().replace(/\s+/g, '') +
+    Math.floor(Math.random() * 10000)
+  );
+};
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,       // ✅ Must be defined
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET, // ✅ Must be defined
-      callbackURL: '/api/auth/google/callback',
+      clientID: process.env.GOOGLE_CLIENT_ID,       // Must be set in .env
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Must be set in .env
+      callbackURL: '/api/auth/google/callback',     // Must match Google Cloud Console settings
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const existingUser = await User.findOne({ googleId: profile.id });
-        if (existingUser) return done(null, existingUser);
+        // Attempt to find existing user by Google ID
+        let user = await User.findOne({ googleId: profile.id });
 
-        const newUser = new User({
-          googleId: profile.id,
-          email: profile.emails[0].value,
-          name: profile.displayName,
-        });
-        await newUser.save();
-        done(null, newUser);
-      } catch (err) {
-        done(err, null);
+        if (!user) {
+          // Extract info safely
+          const displayName = profile.displayName || 'user';
+          const email =
+            profile.emails && profile.emails[0] ? profile.emails[0].value : '';
+
+          // Generate unique username and ensure it's unique
+          let finalUsername = generateUsername(displayName);
+          while (await User.findOne({ username: finalUsername })) {
+            finalUsername = generateUsername(displayName);
+          }
+
+          // Create new user
+          user = await User.create({
+            googleId: profile.id,
+            name: displayName,
+            email,
+            username: finalUsername,
+            password: 'google_oauth_dummy', // Dummy password, make password optional in schema
+          });
+        }
+
+        done(null, user);
+      } catch (error) {
+        done(error, null);
       }
     }
   )
 );
+
+module.exports = passport;

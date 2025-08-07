@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import { FaUserAlt, FaEnvelope, FaLock } from "react-icons/fa";
-import { signup, googleLogin } from "../api/auth"; // ✅ updated from `register` to `signup`
+import { signup } from "../api/auth"; // Removed googleLogin import as it is unused now
+
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -11,29 +12,24 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // Regular sign up handler
   const handleRegister = async () => {
     try {
-      // ✅ No username passed, backend will generate a unique one
-      await signup({ name, email, password });
-      navigate("/");
-      alert("Account Created Successfully")
+      const data = await signup({ name, email, password });
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.user.name);  // store user full name
+      alert("Account Created Successfully");
+      navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
     }
   };
 
-  const handleGoogleSignup = async () => {
-    const dummyGoogleUser = {
-      name: "Google User",
-      email: "user@gmail.com",
-    };
-    try {
-      await googleLogin(dummyGoogleUser);
-      navigate("/dashboard");
-    } catch (err) {
-      alert(err.response?.data?.message || "Google signup failed");
-    }
+  // Google OAuth login - redirect browser to backend Google OAuth route
+  const handleGoogleSignup = () => {
+    window.location.href = 'https://acadsphere.onrender.com/api/auth/google';
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center px-4">

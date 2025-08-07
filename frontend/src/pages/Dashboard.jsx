@@ -2,17 +2,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
 
-export default function Dashboard({ username = "Student" }) {
+export default function Dashboard() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("username"); // clear username on logout
     navigate("/");
   };
 
+  const username = localStorage.getItem("username") || "Student";
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex flex-col items-center justify-start px-4 sm:px-6 md:px-8 py-8 relative">
-
       {/* Logout Button */}
       <motion.button
         onClick={handleLogout}

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 const User = require('../models/User');
 
 // Utility to generate fallback username
@@ -12,7 +13,7 @@ const generateUsername = (name) => {
   );
 };
 
-// @route   POST /api/auth/signup
+// POST /api/auth/signup
 router.post('/signup', async (req, res) => {
   const { name, email, password, username } = req.body;
 
@@ -64,7 +65,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/login
+// POST /api/auth/login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -89,7 +90,31 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/google
+// ----------- Google OAuth using Passport -----------
+
+// Initiate Google OAuth login (redirects to Google login page)
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// OAuth callback route where Google redirects after login
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  (req, res) => {
+    // Generate JWT token for authenticated user
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET || 'defaultsecret', {
+      expiresIn: '7d',
+    });
+
+    // Redirect user to frontend OAuth handler page with token and username
+    const frontendRedirectUrl = `https://acadsphere.vercel.app//oauth-handler?token=${token}&name=${encodeURIComponent(req.user.name)}`;
+    res.redirect(frontendRedirectUrl);
+  }
+);
+
+// Optional legacy POST endpoint for simulated Google login (no longer used in frontend)
 router.post('/google', async (req, res) => {
   const { name, email } = req.body;
 
@@ -101,7 +126,6 @@ router.post('/google', async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
-      // Create user if not exists
       let finalUsername = generateUsername(name);
       while (await User.findOne({ username: finalUsername })) {
         finalUsername = generateUsername(name);
@@ -111,7 +135,7 @@ router.post('/google', async (req, res) => {
         name,
         email,
         username: finalUsername,
-        password: 'google_oauth_dummy', // not used
+        password: 'google_oauth_dummy', // dummy password - not used
       });
     }
 

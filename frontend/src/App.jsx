@@ -4,6 +4,7 @@ import SignUpPage from "./pages/SignUpPage";
 import Dashboard from "./pages/Dashboard";
 import SchoolMarks from "./pages/SchoolMarks";
 import CollegeMarks from "./pages/CollegeMarks";
+import OAuthHandler from "./pages/OAuthHandler"; // Import the new OAuth handler page
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/school" element={<SchoolMarks />} />
       <Route path="/college" element={<CollegeMarks />} />
+      <Route path="/oauth-handler" element={<OAuthHandler />} />  {/* Add this */}
     </Routes>
   );
 }

@@ -3,33 +3,28 @@ import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUserAlt, FaLock } from "react-icons/fa";
-import { login, googleLogin } from "../api/auth";
+import { login } from "../api/auth"; // removed googleLogin import as it's unused now
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // Email/password login handler
   const handleLogin = async () => {
     try {
-      await login({ email, password });
-      navigate("/Dashboard");
+      const data = await login({ email, password });
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.user.name); // store user full name
+      navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     }
   };
 
-  const handleGoogleLogin = async () => {
-    const dummyGoogleUser = {
-      name: "Google User",
-      email: "user@gmail.com",
-    };
-    try {
-      await googleLogin(dummyGoogleUser);
-      navigate("/dashboard");
-    } catch (err) {
-      alert(err.response?.data?.message || "Google login failed");
-    }
+  // Google OAuth login - redirect to backend OAuth endpoint to start flow
+  const handleGoogleLogin = () => {
+    window.location.href = "https://acadsphere.onrender.com/api/auth/google";
   };
 
   return (
@@ -102,7 +97,7 @@ export default function LoginPage() {
             Login
           </motion.button>
 
-          {/* Google Login */}
+          {/* Google Login Button */}
           <motion.button
             className="w-full flex items-center justify-center gap-3 bg-white text-black py-3 rounded-lg font-medium hover:bg-gray-100 transition mb-6 shadow"
             whileHover={{ scale: 1.02 }}
