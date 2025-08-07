@@ -1,14 +1,30 @@
-// backend/middlewares/errorMiddleware.js
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const errorHandler = (err, req, res, next) => {
-  console.error(err.stack); // Log detailed stack trace in console for debugging
+const protect = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
 
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded || !decoded.id) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
 
-  res.status(statusCode).json({
-    message: err.message || "Server Error",
-    stack: process.env.NODE_ENV === "production" ? null : err.stack,
-  });
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    req.user = user;
+    next();
+  } catch (err) {
+    console.error('Protect middleware error:', err);
+    res.status(401).json({ message: 'Invalid token' });
+  }
 };
 
-module.exports = { errorHandler };
+module.exports = { protect };

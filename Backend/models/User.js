@@ -6,10 +6,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: [/.+@.+\..+/, 'Please enter a valid email address']
+    match: [/.+@.+\..+/, 'Please enter a valid email address'],
   },
   username: { type: String, required: true, unique: true },
-  password: { type: String },  // optional for Google users
+  password: { type: String }, // optional for OAuth users
   googleId: { type: String, unique: true, sparse: true },
 }, { timestamps: true });
 

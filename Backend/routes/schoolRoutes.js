@@ -4,13 +4,13 @@ const {
   storeExam,
   getExams,
   updateExam,
-  deleteExam
+  deleteExam,
 } = require('../controllers/schoolController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/', protect, storeExam);
 router.get('/', protect, getExams);
-router.put('/:id', protect, updateExam);       // ✅ Edit
-router.delete('/:id', protect, deleteExam);    // ✅ Delete
+router.put('/:id', protect, updateExam);
+router.delete('/:id', protect, deleteExam);
 
 module.exports = router;
