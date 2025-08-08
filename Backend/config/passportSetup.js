@@ -2,49 +2,28 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
 
-// Helper to generate unique username
-const generateUsername = (name) => {
-  return (
-    name.trim().toLowerCase().replace(/\s+/g, '') +
-    Math.floor(Math.random() * 10000)
-  );
-};
-
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'https://acadsphere.onrender.com/api/auth/google/callback',
+      callbackURL: `${process.env.BACKEND_URL}/api/auth/google/callback`, // MUST MATCH Google Console
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let user = await User.findOne({ googleId: profile.id });
-
+        let user = await User.findOne({ email: profile.emails[0].value });
         if (!user) {
-          const displayName = profile.displayName || 'user';
-          const email = profile.emails && profile.emails[0] ? profile.emails[0].value : '';
-
-          let finalUsername = generateUsername(displayName);
-          while (await User.findOne({ username: finalUsername })) {
-            finalUsername = generateUsername(displayName);
-          }
-
           user = await User.create({
-            googleId: profile.id,
-            name: displayName,
-            email,
-            username: finalUsername,
-            password: 'google_oauth_dummy', // make password optional in User schema
+            name: profile.displayName,
+            email: profile.emails[0].value,
+            username: profile.displayName.toLowerCase().replace(/\s+/g, '') + Math.floor(Math.random() * 10000),
+            password: 'google_oauth_dummy',
           });
         }
-
-        done(null, user);
-      } catch (error) {
-        done(error, null);
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
       }
     }
   )
 );
-
-module.exports = passport;
