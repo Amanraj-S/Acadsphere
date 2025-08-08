@@ -7,56 +7,59 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("username");
+    localStorage.removeItem("username"); // clear username on logout
     navigate("/");
   };
 
   const username = localStorage.getItem("username") || "Student";
 
   return (
-    <div className="
-      min-h-screen bg-gradient-to-br from-black via-gray-900 to-black
-      text-white flex flex-col items-center justify-start
-      relative
-      px-3 py-5
-      sm:px-6 sm:py-8
-      md:px-12 md:py-10
+    <div
+      className="
+        min-h-screen w-full
+        bg-gradient-to-br from-black via-gray-900 to-black 
+        text-white flex flex-col items-center justify-start
+        relative
+        px-3 py-5
+        sm:px-6 sm:py-8
+        md:px-12 md:py-10
+        lg:px-24 xl:px-36
       "
-      style={{overflowX: "hidden"}}
+      style={{ overflowX: "hidden" }}
     >
       {/* LOGOUT BUTTON */}
       <motion.button
         onClick={handleLogout}
-        // mobile-friendly tap area + floating
-        className="
+        className={`
           fixed top-3 right-3 z-30
           flex items-center gap-2
-          px-5 py-3
-          bg-white/30 border border-red-400
-          text-red-500
+          px-4 py-3 sm:px-5 sm:py-3
+          bg-gradient-to-r from-red-400 via-red-500 to-red-700
+          text-white font-semibold
+          border-none
           backdrop-blur-xl
-          rounded-2xl font-semibold shadow-xl
-          hover:bg-red-600 hover:text-white
-          hover:shadow-red-700/70
-          transition-all duration-300
-          text-base
+          rounded-full shadow-2xl
+          hover:brightness-110 hover:scale-105
           active:scale-95
+          transition-all duration-300
+          text-base sm:text-lg
           focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
-        "
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
+          select-none
+        `}
+        initial={{ opacity: 0, y: -15, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 0.5 }}
         aria-label="Logout"
       >
-        <LogOut size={28} />
-        <span className="hidden sm:inline">Logout</span>
+        <LogOut size={22} />
+        <span>Logout</span>
       </motion.button>
 
       {/* TITLE */}
       <motion.h1
         className="
-          mt-8 mb-2 text-2xl font-extrabold text-indigo-800 text-center
-          sm:text-4xl md:text-5xl
+          mt-14 mb-2 text-2xl font-extrabold text-indigo-800 text-center
+          sm:text-4xl md:text-5xl lg:text-6xl
         "
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -67,10 +70,10 @@ export default function Dashboard() {
 
       {/* WELCOME TEXT */}
       <motion.p
-        className="text-base sm:text-xl text-gray-200 mb-2 text-center"
+        className="text-base sm:text-xl md:text-2xl text-gray-200 mb-2 text-center"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.15 }}
       >
         Welcome, <span className="font-semibold text-indigo-500">{username}</span> 👋
       </motion.p>
@@ -78,36 +81,36 @@ export default function Dashboard() {
       {/* INSTRUCTIONS */}
       <motion.p
         className="
-          text-sm sm:text-base text-gray-400 mb-6 text-center px-1 max-w-lg
+          text-sm sm:text-base md:text-lg text-gray-400 mb-6 text-center px-2 max-w-lg
         "
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.2 }}
       >
         Choose your education type to begin tracking your academic journey.
       </motion.p>
 
-      {/* CARDS - stack vertical on mobile */}
+      {/* CARDS - vertical on mobile, side-by-side on wider screens */}
       <motion.div
         className="
-          grid grid-cols-1 gap-4 w-full max-w-md
+          grid
+          grid-cols-1 gap-5 w-full max-w-sm
           sm:max-w-3xl sm:grid-cols-2 sm:gap-6 sm:px-0
-          px-0
         "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.25 }}
       >
         {/* School Card */}
         <Link to="/school" className="w-full" aria-label="Go to School Section">
           <motion.div
             className="
               w-full h-full
-              backdrop-blur-md bg-white/70
-              border border-green-300
-              p-5 sm:p-8
+              backdrop-blur-md bg-gradient-to-br from-green-50 via-white to-green-200
+              border border-green-400
+              p-5 sm:p-7 md:p-8
               rounded-2xl shadow-xl
-              hover:scale-105 transform transition duration-300
+              hover:scale-105 hover:shadow-2xl transform transition duration-300
               cursor-pointer min-h-[140px] sm:min-h-[180px]
               flex flex-col justify-between
             "
@@ -126,11 +129,11 @@ export default function Dashboard() {
           <motion.div
             className="
               w-full h-full
-              backdrop-blur-md bg-white/70
-              border border-blue-300
-              p-5 sm:p-8
+              backdrop-blur-md bg-gradient-to-br from-blue-50 via-white to-blue-200
+              border border-blue-400
+              p-5 sm:p-7 md:p-8
               rounded-2xl shadow-xl
-              hover:scale-105 transform transition duration-300
+              hover:scale-105 hover:shadow-2xl transform transition duration-300
               cursor-pointer min-h-[140px] sm:min-h-[180px]
               flex flex-col justify-between
             "
