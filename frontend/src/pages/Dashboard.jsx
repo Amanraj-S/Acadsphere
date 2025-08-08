@@ -20,10 +20,12 @@ export default function Dashboard() {
         bg-gradient-to-br from-black via-gray-900 to-black 
         text-white flex flex-col items-center justify-start
         relative
-        px-3 py-5
+        px-4 py-6
         sm:px-6 sm:py-8
-        md:px-12 md:py-10
-        lg:px-24 xl:px-36
+        md:px-8 md:py-10
+        lg:px-12 lg:py-12
+        xl:px-16 xl:py-14
+        2xl:px-24 2xl:py-16
       "
       style={{ overflowX: "hidden" }}
     >
@@ -31,18 +33,18 @@ export default function Dashboard() {
       <motion.button
         onClick={handleLogout}
         className={`
-          fixed top-3 right-3 z-30
+          fixed top-4 right-4 z-30
           flex items-center gap-2
-          px-4 py-3 sm:px-5 sm:py-3
+          px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-3
           bg-gradient-to-r from-red-400 via-red-500 to-red-700
           text-white font-semibold
           border-none
           backdrop-blur-xl
-          rounded-full shadow-2xl
+          rounded-full shadow-lg
           hover:brightness-110 hover:scale-105
           active:scale-95
           transition-all duration-300
-          text-base sm:text-lg
+          text-sm sm:text-base md:text-lg
           focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
           select-none
         `}
@@ -51,15 +53,18 @@ export default function Dashboard() {
         transition={{ delay: 0.5 }}
         aria-label="Logout"
       >
-        <LogOut size={22} />
+        <LogOut size={20} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
         <span>Logout</span>
       </motion.button>
 
       {/* TITLE */}
       <motion.h1
         className="
-          mt-14 mb-2 text-2xl font-extrabold text-indigo-800 text-center
-          sm:text-4xl md:text-5xl lg:text-6xl
+          mt-12 mb-3 text-xl font-extrabold text-indigo-800 text-center
+          sm:mt-14 sm:mb-4 sm:text-3xl
+          md:mt-16 md:mb-5 md:text-4xl
+          lg:text-5xl lg:mt-20 lg:mb-6
+          xl:text-6xl
         "
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -70,7 +75,11 @@ export default function Dashboard() {
 
       {/* WELCOME TEXT */}
       <motion.p
-        className="text-base sm:text-xl md:text-2xl text-gray-200 mb-2 text-center"
+        className="
+          text-sm sm:text-lg md:text-xl lg:text-2xl 
+          text-gray-200 mb-3 sm:mb-4 md:mb-5 lg:mb-6 
+          text-center
+        "
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.15 }}
@@ -81,7 +90,9 @@ export default function Dashboard() {
       {/* INSTRUCTIONS */}
       <motion.p
         className="
-          text-sm sm:text-base md:text-lg text-gray-400 mb-6 text-center px-2 max-w-lg
+          text-xs sm:text-sm md:text-base lg:text-lg 
+          text-gray-400 mb-5 sm:mb-6 md:mb-8 lg:mb-10 
+          text-center px-2 sm:px-4 max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl
         "
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -90,12 +101,15 @@ export default function Dashboard() {
         Choose your education type to begin tracking your academic journey.
       </motion.p>
 
-      {/* CARDS - vertical on mobile, side-by-side on wider screens */}
+      {/* CARDS */}
       <motion.div
         className="
           grid
-          grid-cols-1 gap-5 w-full max-w-sm
-          sm:max-w-3xl sm:grid-cols-2 sm:gap-6 sm:px-0
+          grid-cols-1 gap-4 w-full max-w-xs
+          sm:max-w-lg sm:gap-5
+          md:max-w-3xl md:grid-cols-2 md:gap-6
+          lg:max-w-4xl lg:gap-8
+          xl:max-w-5xl
         "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -108,16 +122,16 @@ export default function Dashboard() {
               w-full h-full
               backdrop-blur-md bg-gradient-to-br from-green-50 via-white to-green-200
               border border-green-400
-              p-5 sm:p-7 md:p-8
-              rounded-2xl shadow-xl
-              hover:scale-105 hover:shadow-2xl transform transition duration-300
-              cursor-pointer min-h-[140px] sm:min-h-[180px]
+              p-4 sm:p-6 md:p-7 lg:p-8
+              rounded-2xl shadow-lg
+              hover:scale-105 hover:shadow-xl transform transition duration-300
+              cursor-pointer min-h-[120px] sm:min-h-[150px] md:min-h-[160px] lg:min-h-[180px]
               flex flex-col justify-between
             "
             whileHover={{ scale: 1.05 }}
           >
-            <h2 className="text-lg sm:text-2xl font-bold text-green-800 mb-2">🏫 School</h2>
-            <p className="text-gray-700 text-xs sm:text-base leading-relaxed">
+            <h2 className="text-base sm:text-xl md:text-2xl font-bold text-green-800 mb-2">🏫 School</h2>
+            <p className="text-gray-700 text-xs sm:text-sm md:text-base leading-relaxed">
               Track your academic performance across various subjects and exams.
               Get insights into your grade trends, weekly tests, and prepare smarter.
             </p>
@@ -131,16 +145,16 @@ export default function Dashboard() {
               w-full h-full
               backdrop-blur-md bg-gradient-to-br from-blue-50 via-white to-blue-200
               border border-blue-400
-              p-5 sm:p-7 md:p-8
-              rounded-2xl shadow-xl
-              hover:scale-105 hover:shadow-2xl transform transition duration-300
-              cursor-pointer min-h-[140px] sm:min-h-[180px]
+              p-4 sm:p-6 md:p-7 lg:p-8
+              rounded-2xl shadow-lg
+              hover:scale-105 hover:shadow-xl transform transition duration-300
+              cursor-pointer min-h-[120px] sm:min-h-[150px] md:min-h-[160px] lg:min-h-[180px]
               flex flex-col justify-between
             "
             whileHover={{ scale: 1.05 }}
           >
-            <h2 className="text-lg sm:text-2xl font-bold text-blue-800 mb-2">🎓 College</h2>
-            <p className="text-gray-700 text-xs sm:text-base leading-relaxed">
+            <h2 className="text-base sm:text-xl md:text-2xl font-bold text-blue-800 mb-2">🎓 College</h2>
+            <p className="text-gray-700 text-xs sm:text-sm md:text-base leading-relaxed">
               Manage your semester-wise grades, GPA, arrears, and overall CGPA.
               Stay on top of academic goals and visualize your academic growth.
             </p>
