@@ -24,7 +24,7 @@ export default function LoginPage() {
 
   // Google OAuth login - redirect to backend OAuth endpoint to start flow
   const handleGoogleLogin = () => {
-    window.location.href = "https://acadsphere.onrender.com/api/auth/google/callback";
+    window.location.href = "https://acadsphere.onrender.com/api/auth/google";
   };
 
   return (
