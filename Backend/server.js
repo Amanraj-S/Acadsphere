@@ -1,4 +1,3 @@
-// server.js
 require('dotenv').config();
 
 const express = require('express');
@@ -55,13 +54,14 @@ function safeUseRoute(mountPath, routePath, appInstance) {
     safeUseRoute('/api/college', './routes/collegeRoutes', app);
     safeUseRoute('/api/school', './routes/schoolRoutes', app);
 
-    // Serve frontend in production
+    // Serve frontend SPA in production
     if (process.env.NODE_ENV === 'production') {
       const frontendPath = path.join(__dirname, '../frontend/dist');
       app.use(express.static(frontendPath));
 
-      // SPA catch-all (make sure this is INSIDE the if block!)
-      app.get('*', (req, res) => {
+      // NOTE: Express 5 / path-to-regexp v8 requires named wildcards
+      // Update the catch-all route accordingly:
+      app.get('/*splat', (req, res) => {
         res.sendFile(path.join(frontendPath, 'index.html'));
       });
     }
@@ -115,4 +115,4 @@ function safeUseRoute(mountPath, routePath, appInstance) {
     console.error('❌ Failed to start server:', err.stack || err);
     process.exit(1);
   }
-})(); // End of async IIFE
+})(); // End async IIFE
