@@ -14,15 +14,11 @@ const app = express();
 
 /**
  * Safely mount a route, logging success/failure.
- * @param {string} mountPath - Path prefix for the route
- * @param {string} routePath - Local file path to the route module
- * @param {object} appInstance - Express app instance
  */
 function safeUseRoute(mountPath, routePath, appInstance) {
   try {
     const router = require(routePath);
 
-    // Validate route module export
     if (!router || (typeof router !== 'function' && typeof router !== 'object')) {
       console.warn(`[WARN] Route module ${routePath} did not export a valid router.`);
     }
@@ -32,7 +28,7 @@ function safeUseRoute(mountPath, routePath, appInstance) {
   } catch (err) {
     console.error(`❌ Failed to mount route file: ${routePath} (mount at ${mountPath})`);
     console.error(err.stack || err);
-    throw err; // rethrow to stop startup if a route is broken
+    throw err;
   }
 }
 
@@ -54,26 +50,28 @@ function safeUseRoute(mountPath, routePath, appInstance) {
     app.use(express.json());
     app.use(passport.initialize());
 
-    // Routes
+    // API Routes
     safeUseRoute('/api/auth', './routes/authRoutes', app);
     safeUseRoute('/api/college', './routes/collegeRoutes', app);
     safeUseRoute('/api/school', './routes/schoolRoutes', app);
 
     // Serve frontend in production
-   if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../frontend/dist');
-  app.use(express.static(frontendPath));
+    if (process.env.NODE_ENV === 'production') {
+      const frontendPath = path.join(__dirname, '../frontend/dist');
+      app.use(express.static(frontendPath));
 
-  // Catch-all for SPA routes (Express v5+ safe)
-  app.get('/*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  });
-}
+      // ✅ Express v5-safe SPA catch-all
+      app.get('/*', (req, res) => {
+        res.sendFile(path.join(frontendPath, 'index.html'));
+      });
+    }
 
-
-    // 404 handler
-    app.use((req, res) => {
-      res.status(404).json({ message: 'Route not found' });
+    // 404 JSON fallback for unmatched API routes
+    app.use((req, res, next) => {
+      if (req.originalUrl.startsWith('/api/')) {
+        return res.status(404).json({ message: 'Route not found' });
+      }
+      next();
     });
 
     // Start server
