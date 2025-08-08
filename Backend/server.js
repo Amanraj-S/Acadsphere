@@ -61,10 +61,10 @@ function safeUseRoute(mountPath, routePath, appInstance) {
       app.use(express.static(frontendPath));
 
       // ✅ Express v5-safe SPA catch-all
-      app.get('/*', (req, res) => {
-        res.sendFile(path.join(frontendPath, 'index.html'));
-      });
-    }
+      app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
+});
+
 
     // 404 JSON fallback for unmatched API routes
     app.use((req, res, next) => {
