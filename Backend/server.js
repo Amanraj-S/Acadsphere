@@ -60,11 +60,11 @@ function safeUseRoute(mountPath, routePath, appInstance) {
       const frontendPath = path.join(__dirname, '../frontend/dist');
       app.use(express.static(frontendPath));
 
-      // ✅ Express v5-safe SPA catch-all
+      // SPA catch-all (make sure this is INSIDE the if block!)
       app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
-});
-
+        res.sendFile(path.join(frontendPath, 'index.html'));
+      });
+    }
 
     // 404 JSON fallback for unmatched API routes
     app.use((req, res, next) => {
@@ -115,4 +115,4 @@ function safeUseRoute(mountPath, routePath, appInstance) {
     console.error('❌ Failed to start server:', err.stack || err);
     process.exit(1);
   }
-})();
+})(); // End of async IIFE
