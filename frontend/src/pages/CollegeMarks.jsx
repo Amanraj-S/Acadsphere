@@ -144,103 +144,59 @@ const AddCollegeMarks = () => {
 
   const editSemester = (index) => {
     const sem = semesters[index];
+
     const copiedSubjects = sem.subjects.map((subj) => ({
       name: subj.name,
       mark: subj.mark,
       credit: subj.credit
     }));
+
     setCurrentSubjects(copiedSubjects);
     setEditingSemesterId(sem._id);
     toast.info(`Editing ${sem.semester}...`);
   };
 
   return (
-    <div className="
-      min-h-screen w-full
-      bg-gradient-to-br from-black via-gray-900 to-black 
-      text-white 
-      px-4 py-6
-      sm:px-6 sm:py-8
-      md:px-8 md:py-10
-      lg:px-12 lg:py-12
-      xl:px-16 xl:py-14
-    ">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-4 py-8 sm:px-6 md:px-8 lg:px-12">
       <ToastContainer />
-      <h2 className="
-        text-xl sm:text-2xl md:text-3xl lg:text-4xl 
-        font-bold mb-4 sm:mb-6 md:mb-8 
-        text-center text-indigo-800
-      ">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">
         🎓 College Marks Tracker
       </h2>
 
       <motion.div
-        className="
-          bg-white/10 backdrop-blur-md 
-          p-4 sm:p-5 md:p-6 
-          rounded-2xl shadow-xl 
-          max-w-full sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 
-          mx-auto
-        "
+        className="bg-white/10 backdrop-blur-md p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl max-w-4xl mx-auto w-full"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h3 className="
-          text-base sm:text-lg md:text-xl lg:text-2xl 
-          font-semibold mb-3 sm:mb-4
-        ">
+        <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4">
           {editingSemesterId ? "Edit Semester" : `Enter Semester ${semesterCount} Marks`}
         </h3>
 
         {currentSubjects.map((subject, index) => (
           <motion.div
             key={index}
-            className="
-              grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4 
-              mb-3 sm:mb-4
-            "
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-3"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.2 }}
           >
             <input
-              className="
-                bg-gray-900 text-white 
-                p-2 sm:p-3 rounded-xl 
-                border border-gray-700 
-                w-full 
-                text-sm sm:text-base
-                placeholder-gray-400
-              "
+              className="bg-gray-900 text-white p-3 rounded-xl border border-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
               placeholder="Subject Name"
               value={subject.name}
               onChange={(e) => handleInputChange(index, "name", e.target.value)}
             />
             <input
-              className="
-                bg-gray-900 text-white 
-                p-2 sm:p-3 rounded-xl 
-                border border-gray-700 
-                w-full 
-                text-sm sm:text-base
-                placeholder-gray-400
-              "
+              className="bg-gray-900 text-white p-3 rounded-xl border border-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="number"
               placeholder="Mark /100"
               value={subject.mark}
               onChange={(e) => handleInputChange(index, "mark", e.target.value)}
             />
             <input
-              className="
-                bg-gray-900 text-white 
-                p-2 sm:p-3 rounded-xl 
-                border border-gray-700 
-                w-full 
-                text-sm sm:text-base
-                placeholder-gray-400
-              "
+              className="bg-gray-900 text-white p-3 rounded-xl border border-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="number"
               placeholder="Credit"
               value={subject.credit}
@@ -248,42 +204,23 @@ const AddCollegeMarks = () => {
             />
             <button
               onClick={() => deleteSubject(index)}
-              className="
-                bg-transparent hover:bg-red-600 
-                text-white text-lg sm:text-xl 
-                px-4 sm:px-6 py-2 sm:py-2.5 
-                rounded-xl shadow-lg 
-                hover:scale-105 transition-all duration-300
-                w-full sm:w-auto
-              "
+              className="bg-transparent hover:bg-red-600 text-white text-lg sm:text-xl px-4 sm:px-6 py-2 rounded-xl shadow-lg hover:scale-105 transition-all duration-300"
             >
               ✖
             </button>
           </motion.div>
         ))}
 
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
+        <div className="flex flex-wrap gap-3 sm:gap-4 mt-4">
           <button
             onClick={addSubject}
-            className="
-              bg-blue-600 hover:bg-blue-500 
-              transition px-4 sm:px-5 py-2 sm:py-2.5 
-              rounded-xl shadow text-white 
-              text-sm sm:text-base
-              w-full sm:w-auto
-            "
+            className="bg-blue-600 hover:bg-blue-500 transition px-4 sm:px-5 py-2 rounded-xl shadow text-white text-sm sm:text-base"
           >
             ➕ Add Subject
           </button>
           <button
             onClick={storeSemester}
-            className="
-              bg-green-600 hover:bg-green-500 
-              transition px-4 sm:px-5 py-2 sm:py-2.5 
-              rounded-xl shadow text-white 
-              text-sm sm:text-base
-              w-full sm:w-auto
-            "
+            className="bg-green-600 hover:bg-green-500 transition px-4 sm:px-5 py-2 rounded-xl shadow text-white text-sm sm:text-base"
           >
             {editingSemesterId ? "✅ Update Semester" : `💾 Store Semester ${semesterCount}`}
           </button>
@@ -292,70 +229,41 @@ const AddCollegeMarks = () => {
 
       {semesters.length > 0 && (
         <>
-          <h3 className="
-            text-lg sm:text-xl md:text-2xl lg:text-3xl 
-            font-bold mt-8 sm:mt-10 md:mt-12 
-            text-center
-          ">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mt-8 sm:mt-10 text-center">
             📚 Stored Semesters
           </h3>
 
-          <div className="
-            grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
-            gap-4 sm:gap-6 md:gap-8 
-            mt-4 sm:mt-6
-            max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-5xl 
-            mx-auto
-          ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6 max-w-6xl mx-auto">
             {[...semesters]
               .sort((a, b) => parseInt(a.semester.split(" ")[1]) - parseInt(b.semester.split(" ")[1]))
               .map((sem, index) => (
                 <motion.div
                   key={sem._id}
-                  className="
-                    bg-white/10 backdrop-blur-md 
-                    p-4 sm:p-5 rounded-2xl shadow-xl
-                    min-h-[150px] sm:min-h-[180px]
-                  "
+                  className="bg-white/10 backdrop-blur-md p-4 sm:p-5 rounded-2xl shadow-xl"
                   whileHover={{ scale: 1.03 }}
                 >
-                  <h4 className="
-                    text-base sm:text-lg md:text-xl 
-                    font-semibold mb-2 sm:mb-3
-                  ">
-                    {sem.semester}
-                  </h4>
+                  <h4 className="text-base sm:text-lg md:text-xl font-semibold mb-2">{sem.semester}</h4>
                   <p className="mb-2 text-sm sm:text-base">
                     🎓 GPA: <span className="text-green-400 font-semibold">{sem.gpa}</span> &nbsp;|&nbsp;
                     ❌ Arrears: <span className="text-red-400 font-semibold">{sem.arrears}</span>
                   </p>
-                  <ul className="text-xs sm:text-sm mb-2 sm:mb-3">
+                  <ul className="text-xs sm:text-sm mb-2">
                     {sem.subjects.map((sub, idx) => (
                       <li key={idx}>
                         {sub.name}: {sub.mark}/100 (Credit: {sub.credit})
                       </li>
                     ))}
                   </ul>
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => editSemester(index)}
-                      className="
-                        bg-yellow-500 hover:bg-yellow-400 
-                        text-white px-3 sm:px-4 py-1.5 sm:py-2 
-                        rounded-xl text-sm sm:text-base
-                        w-full sm:w-auto
-                      "
+                      className="bg-yellow-500 hover:bg-yellow-400 text-white px-3 py-1 rounded-xl text-sm"
                     >
                       ✏️ Edit
                     </button>
                     <button
                       onClick={() => deleteSemester(sem._id)}
-                      className="
-                        bg-red-500 hover:bg-red-400 
-                        text-white px-3 sm:px-4 py-1.5 sm:py-2 
-                        rounded-xl text-sm sm:text-base
-                        w-full sm:w-auto
-                      "
+                      className="bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded-xl text-sm"
                     >
                       🗑️ Delete
                     </button>
@@ -364,69 +272,40 @@ const AddCollegeMarks = () => {
               ))}
           </div>
 
-          <div className="
-            mt-8 sm:mt-10 md:mt-12 
-            bg-white/10 backdrop-blur-md 
-            p-4 sm:p-5 md:p-6 
-            rounded-xl shadow-xl 
-            max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-5xl 
-            mx-auto
-            overflow-x-auto
-          ">
-            <h3 className="
-              text-base sm:text-lg md:text-xl lg:text-2xl 
-              font-semibold mb-3 sm:mb-4
-            ">
-              📊 GPA Chart
-            </h3>
-            <div className="w-full min-w-[300px] sm:min-w-[400px]">
-              <BarChart 
-                width={600} 
-                height={200} 
-                data={semesters} 
-                margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+          <div className="mt-8 sm:mt-10 bg-white/10 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-xl max-w-4xl mx-auto w-full">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4">📊 GPA Chart</h3>
+            <div className="w-full overflow-x-auto">
+              <BarChart
+                width={Math.min(window.innerWidth * 0.9, 600)}
+                height={300}
+                data={semesters}
+                margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#8884d8" />
-                <XAxis dataKey="semester" stroke="#fff" tick={{ fontSize: 12 }} />
-                <YAxis domain={[0, 10]} stroke="#fff" tick={{ fontSize: 12 }} />
-                <Tooltip contentStyle={{ backgroundColor: "#222", color: "#fff", fontSize: 12 }} />
-                <Bar dataKey="gpa" fill="#00FFFF" barSize={30} />
+                <XAxis dataKey="semester" stroke="#fff" fontSize={12} />
+                <YAxis domain={[0, 10]} stroke="#fff" fontSize={12} />
+                <Tooltip />
+                <Bar dataKey="gpa" fill="#00FFFF" barSize={40} />
               </BarChart>
             </div>
           </div>
 
-          <div className="
-            mt-8 sm:mt-10 md:mt-12 
-            bg-white/10 backdrop-blur-md 
-            p-4 sm:p-5 md:p-6 
-            rounded-xl shadow-xl 
-            max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-5xl 
-            mx-auto
-            overflow-x-auto
-          ">
-            <h3 className="
-              text-base sm:text-lg md:text-xl lg:text-2xl 
-              font-semibold mb-3 sm:mb-4
-            ">
-              📈 GPA Trend
-            </h3>
-            <div className="w-full min-w-[300px] sm:min-w-[400px]">
-              <LineChart 
-                width={600} 
-                height={200} 
-                data={semesters} 
-                margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+          <div className="mt-8 sm:mt-10 bg-white/10 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-xl max-w-4xl mx-auto w-full">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4">📈 GPA Trend</h3>
+            <div className="w-full overflow-x-auto">
+              <LineChart
+                width={Math.min(window.innerWidth * 0.9, 600)}
+                height={300}
+                data={semesters}
+                margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
               >
-                <XAxis dataKey="semester" stroke="#fff" tick={{ fontSize: 12 }} />
-                <YAxis domain={[0, 10]} stroke="#fff" tick={{ fontSize: 12 }} />
-                <Tooltip contentStyle={{ backgroundColor: "#222", color: "#fff", fontSize: 12 }} />
-                <Line type="monotone" dataKey="gpa" stroke="#4ade80" strokeWidth={2} />
+                <XAxis dataKey="semester" stroke="#fff" fontSize={12} />
+                <YAxis domain={[0, 10]} stroke="#fff" fontSize={12} />
+                <Tooltip />
+                <Line type="monotone" dataKey="gpa" stroke="#4ade80" strokeWidth={3} />
               </LineChart>
             </div>
-            <p className="
-              text-sm sm:text-base md:text-lg 
-              mt-3 sm:mt-4 font-bold
-            ">
+            <p className="text-base sm:text-lg mt-4 font-bold">
               🌟 CGPA: <span className="text-green-400">{calculateCGPA()}</span>
             </p>
           </div>
