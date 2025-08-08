@@ -7,25 +7,32 @@ const passport = require('passport');
 const path = require('path');
 const connectDB = require('./config/db');
 
+// Load passport config
 require('./config/passportSetup');
 
 const app = express();
 
+/**
+ * Safely mount a route, logging success/failure.
+ * @param {string} mountPath - Path prefix for the route
+ * @param {string} routePath - Local file path to the route module
+ * @param {object} appInstance - Express app instance
+ */
 function safeUseRoute(mountPath, routePath, appInstance) {
   try {
-    const r = require(routePath);
-    // Basic validation: router should be function (express Router is a function)
-    if (!r || (typeof r !== 'function' && typeof r !== 'object')) {
-      console.warn(`[WARN] Route module ${routePath} did not export a router.`);
+    const router = require(routePath);
+
+    // Validate route module export
+    if (!router || (typeof router !== 'function' && typeof router !== 'object')) {
+      console.warn(`[WARN] Route module ${routePath} did not export a valid router.`);
     }
-    appInstance.use(mountPath, r);
-    console.log(`Mounted ${routePath} at ${mountPath}`);
+
+    appInstance.use(mountPath, router);
+    console.log(`✅ Mounted ${routePath} at ${mountPath}`);
   } catch (err) {
-    // Attach routePath to error for easier debugging
     console.error(`❌ Failed to mount route file: ${routePath} (mount at ${mountPath})`);
-    console.error(err && err.stack ? err.stack : err);
-    // Re-throw so startup will fail OR comment out rethrow to continue (choose one)
-    throw err;
+    console.error(err.stack || err);
+    throw err; // rethrow to stop startup if a route is broken
   }
 }
 
@@ -37,21 +44,22 @@ function safeUseRoute(mountPath, routePath, appInstance) {
 
     const FRONTEND_URL = process.env.FRONTEND_URL || 'https://acadsphere.vercel.app';
 
+    // Middleware
     app.use(
       cors({
         origin: FRONTEND_URL,
         credentials: true,
       })
     );
-
     app.use(express.json());
     app.use(passport.initialize());
 
-    // Use safe loader so we get precise errors
+    // Routes
     safeUseRoute('/api/auth', './routes/authRoutes', app);
     safeUseRoute('/api/college', './routes/collegeRoutes', app);
     safeUseRoute('/api/school', './routes/schoolRoutes', app);
 
+    // Serve frontend in production
     if (process.env.NODE_ENV === 'production') {
       const frontendPath = path.join(__dirname, '../frontend/dist');
       app.use(express.static(frontendPath));
@@ -60,23 +68,26 @@ function safeUseRoute(mountPath, routePath, appInstance) {
       });
     }
 
+    // 404 handler
     app.use((req, res) => {
       res.status(404).json({ message: 'Route not found' });
     });
 
+    // Start server
     const PORT = process.env.PORT || 5000;
-    const server = app.listen(PORT, () =>
-      console.log(`🚀 Server running on port ${PORT} (ENV: ${process.env.NODE_ENV || 'development'})`)
-    );
+    const server = app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT} (ENV: ${process.env.NODE_ENV || 'development'})`);
+    });
 
+    // Graceful shutdown
     const shutdown = (reason) => {
-      console.warn('Shutting down server:', reason);
+      console.warn(`⚠️ Shutting down server due to: ${reason}`);
       server.close(() => {
         console.log('HTTP server closed.');
         process.exit(1);
       });
       setTimeout(() => {
-        console.error('Forcing shutdown...');
+        console.error('⏳ Forced shutdown.');
         process.exit(1);
       }, 10000).unref();
     };
@@ -94,13 +105,13 @@ function safeUseRoute(mountPath, routePath, appInstance) {
     process.on('SIGTERM', () => {
       console.info('SIGTERM received — shutting down gracefully.');
       server.close(() => {
-        console.log('Process terminated');
+        console.log('Process terminated.');
       });
     });
 
     module.exports = app;
   } catch (err) {
-    console.error('❌ Failed to start server:', err && err.stack ? err.stack : err);
+    console.error('❌ Failed to start server:', err.stack || err);
     process.exit(1);
   }
 })();
