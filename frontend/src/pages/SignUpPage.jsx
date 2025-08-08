@@ -27,7 +27,7 @@ export default function SignUpPage() {
 
   // Google OAuth login - redirect browser to backend Google OAuth route
   const handleGoogleSignup = () => {
-    window.location.href = 'https://acadsphere.onrender.com/api/auth/google';
+    window.location.href = 'https://acadsphere.onrender.com/api/auth/google/callback';
   };
 
 
