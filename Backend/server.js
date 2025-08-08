@@ -60,13 +60,16 @@ function safeUseRoute(mountPath, routePath, appInstance) {
     safeUseRoute('/api/school', './routes/schoolRoutes', app);
 
     // Serve frontend in production
-    if (process.env.NODE_ENV === 'production') {
-      const frontendPath = path.join(__dirname, '../frontend/dist');
-      app.use(express.static(frontendPath));
-      app.get('*', (req, res) => {
-        res.sendFile(path.join(frontendPath, 'index.html'));
-      });
-    }
+   if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '../frontend/dist');
+  app.use(express.static(frontendPath));
+
+  // Catch-all for SPA routes (Express v5+ safe)
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+}
+
 
     // 404 handler
     app.use((req, res) => {
