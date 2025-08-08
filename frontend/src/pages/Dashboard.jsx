@@ -19,25 +19,29 @@ export default function Dashboard() {
       <motion.button
         onClick={handleLogout}
         className="
-          absolute top-4 right-4 
-          sm:top-6 sm:right-6 
-          flex items-center gap-2 px-5 py-2 
-          bg-white/20 border border-red-500 
-          text-red-400 backdrop-blur-md 
-          rounded-2xl font-semibold shadow-lg 
-          hover:bg-red-600 hover:text-white 
-          hover:shadow-red-700/70 
-          focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 
-          transition-all duration-300 text-sm sm:text-base
+          absolute z-20
+          top-2 right-2
+          sm:top-6 sm:right-6
+          flex items-center gap-2
+          px-4 py-3 sm:px-5 sm:py-2
+          bg-white/30 border border-red-400
+          text-red-500 backdrop-blur-md
+          rounded-xl font-semibold shadow-xl
+          hover:bg-red-600 hover:text-white
+          hover:shadow-red-700/70
+          focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1
+          transition-all duration-300
+          text-base sm:text-lg
+          active:scale-95
           select-none
-          "
+        "
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
         aria-label="Logout"
       >
-        <LogOut size={20} />
-        Logout
+        <LogOut size={24} />
+        <span className="hidden xs:inline">Logout</span>
       </motion.button>
 
       {/* Title */}
