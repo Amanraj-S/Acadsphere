@@ -3,6 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUserAlt, FaLock } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from "../api/auth"; // removed googleLogin import as it's unused now
 
 export default function LoginPage() {
@@ -85,16 +86,17 @@ export default function LoginPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="w-full pl-10 pr-12 py-3 bg-white/10 border border-gray-300 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+              className="w-full pl-10 pr-12 py-3 bg-white/10 border border-gray-300 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button type="button"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-300 text-xs bg-transparent px-2 py-1 rounded focus:outline-none"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
+            <button type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded focus:outline-none flex items-center justify-center"
+              style={{ width: '32px', height: '32px' }}
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+            </button>
           </div>
 
           {/* Login Button */}
