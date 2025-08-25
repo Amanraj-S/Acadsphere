@@ -12,6 +12,10 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+    // Password visibility toggle
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
   // Regular sign up handler
   const handleRegister = async () => {
     try {
@@ -93,13 +97,19 @@ export default function SignUpPage() {
           {/* Password */}
           <div className="relative mb-6">
             <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-300" />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full pl-10 pr-4 py-3 bg-white/10 border border-gray-300 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="w-full pl-10 pr-12 py-3 bg-white/10 border border-gray-300 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-300 text-xs bg-transparent px-2 py-1 rounded focus:outline-none"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
           </div>
 
           {/* Sign Up */}
