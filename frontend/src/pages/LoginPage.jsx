@@ -92,7 +92,7 @@ export default function LoginPage() {
               />
             <button type="button"
               className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded focus:outline-none flex items-center justify-center"
-              style={{ width: '32px', height: '32px' }}
+              style={{ width: '25px', height: '25px' }}
               onClick={togglePasswordVisibility}
             >
               {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
